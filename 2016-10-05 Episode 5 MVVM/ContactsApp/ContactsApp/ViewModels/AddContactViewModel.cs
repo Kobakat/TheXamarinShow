@@ -11,16 +11,16 @@ namespace ContactsApp.ViewModels
 
         public AddContactViewModel()
         {
-            LaunchWebsiteCommand = new Command(LaunchWebsite,
-                                                () => !IsBusy);
-            SaveContactCommand = new Command(async ()=> await SaveContact(),
+            SaveContactCommand = new Command(async () => await SaveContact(),
                                             () => !IsBusy);
         }
 
         string name = "James Montemagno";
-        string website = "http://motz.codes";
+
+        string contact = "No contact currently saved";
         bool bestFriend;
         bool isBusy = false;
+        bool goodName = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,7 +28,6 @@ namespace ContactsApp.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
 
         public bool BestFriend
         {
@@ -49,15 +48,28 @@ namespace ContactsApp.ViewModels
             set
             {
                 name = value;
+             
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayMessage));
+                
+            }
+        }
 
-                if (name == "Miguel")
-                    IsBusy = true;
+        public string Contact
+        {
+            get { return contact; }
+            set
+            {
+                contact = value;
+
+                if (contact == "Brendan" || contact == "Dave")
+                    goodName = true;
                 else
-                    IsBusy = false;
+                    goodName = false;
 
                 OnPropertyChanged();
-
-                OnPropertyChanged(nameof(DisplayMessage));
+                OnPropertyChanged(nameof(DisplayContact));
+                OnPropertyChanged(nameof(DisplayHiddenMessage));
             }
         }
 
@@ -66,19 +78,23 @@ namespace ContactsApp.ViewModels
             get { return $"Your new friend is named {Name} and " +
                          $"{(bestFriend ? "is" : "is not")} your best friend."; }
         }
-        
-        public string Website
+
+        public string DisplayContact
+        {
+            get { return Name; }
+        }
+
+        public string DisplayHiddenMessage
         {
             get
             {
-                return website;
-            }
-            set
-            {
-                website = value;
-                OnPropertyChanged();
+                if (goodName)
+                    return "Wow! Your currently saved contact is an extraordinary person!";
+
+                return "";
             }
         }
+
 
         public bool IsBusy
         {
@@ -88,33 +104,20 @@ namespace ContactsApp.ViewModels
                 isBusy = value;
 
                 OnPropertyChanged();
-                LaunchWebsiteCommand.ChangeCanExecute();
                 SaveContactCommand.ChangeCanExecute();
             }
         }
 
-
-        public Command LaunchWebsiteCommand { get; }
         public Command SaveContactCommand { get; }
-
-        void LaunchWebsite()
-        {
-            try
-            {
-                Device.OpenUri(new Uri(website));
-            }
-            catch
-            {
-
-            }
-        }
 
         async Task SaveContact()
         {
             IsBusy = true;
-            await Task.Delay(4000);
+            await Task.Delay(2000);
 
             IsBusy = false;
+
+            Contact = Name;
 
             await Application.Current.MainPage.DisplayAlert("Save", "Contact has been saved", "OK");
         }

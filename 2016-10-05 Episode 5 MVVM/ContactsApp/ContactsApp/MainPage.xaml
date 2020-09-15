@@ -7,21 +7,20 @@
     <Label Text="Name"/>
     <Entry Text="{Binding Name}" Placeholder="Full Name"/>
     
-    <Label Text="Website"/>
-    <Entry Text="{Binding Website}" Placeholder="Your Website"/>
-    
     <StackLayout Orientation="Horizontal" Spacing="10">
       <Label Text="Best Friend?"/>
       <Switch IsToggled="{Binding BestFriend}"/>
     </StackLayout>
     
     <Label Text="{Binding DisplayMessage}"/>
-    
-    <Button Text="Open Website" Command="{Binding LaunchWebsiteCommand}"/>
+
     <Button Text="Save Contact" Command="{Binding SaveContactCommand}"/>
-    
+
+    <Label Text="Your currently saved contact is"/>
+    <Label Text="{Binding DisplayContact}"/>
+    <Label Text="{Binding DisplayHiddenMessage}"/>
+
     <ActivityIndicator IsRunning="{Binding IsBusy}"/>
-    
   </StackLayout>
 
 </ContentPage>
